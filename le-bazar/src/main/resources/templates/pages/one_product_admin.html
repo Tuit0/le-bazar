@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product</title>
+    <style>
+        .product
+        {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+
+            background-color: white;
+            float: left;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            border: 1px solid black;
+            width: 30%;
+            height: 500px;
+            word-break: break-all;
+        }
+        .inform
+        {
+            margin-left: 4px;
+            font-style: oblique;
+        }
+        .description {
+            width: 35%;
+            height: 500px;
+            word-break: break-all;
+        }
+        .button{
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4%;
+        }
+    </style>
+</head>
+<body>
+<div style="text-align: left; margin-left: 10px">
+    <button class="button" type="button" onClick="location.href = '/';">Home</button>
+</div> <br><br>
+
+<div class="product">
+    <p class="column" align="center"><img th:src="'data:image/jpg;base64,'+${avatar}" th:alt="${name}" style="width: 80%" alt="" src=""></p>
+    <div class="inform">
+        <p> <span th:text="'Maker: '+${maker}"></span><br>
+            <span th:text="'Name: '+${name}"></span></p>
+        <p style="color: blue"><span th:text="'Price: '+${price}"></span></p>
+    </div>
+</div>
+<div class="description">
+    <b style="font-size: xx-large">Description:</b>
+    <p><span th:text="${description}"></span></p>
+
+    <br><br>
+
+    <button class="button" style="background-color: red; padding: 8px 15px; font-size: 10px;" th:onclick="|window.location.href='@{/removeProduct(id=${id})}'|">Delete Product</button>
+    <button class="button" style="background-color: darkgoldenrod; padding: 8px 15px; font-size: 10px;" th:onclick="|window.location.href='@{/editProduct(id=${id})}'|">Edit Product</button>
+
+</div>
+</body>
+</html>

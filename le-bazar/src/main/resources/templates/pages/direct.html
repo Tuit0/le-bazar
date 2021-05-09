@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Direct Page</title>
+</head>
+<body>
+<script>
+    fetch("/getUser",
+        {
+            method: 'GET',
+            headers: {
+                'Authorization': localStorage.getItem("Key")
+            }
+        }).then(
+        response => {
+            if (!response.ok) {
+                alert("Error");
+            }
+            return response.json();
+        }
+    ).then(
+        data=>{
+            location.replace(data.data)
+        }
+    )
+</script>
+</body>
+</html>

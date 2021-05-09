@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="#">
+    <title>Please Login</title>
+    <style>
+        .form_class
+        {
+            align-items: center;
+            text-align: left;
+            margin-left: 30%;
+            width: 40%;
+        }
+        .center
+        {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .button{
+            background-color: green;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 10px;
+            cursor: pointer;
+            border-radius: 5%;
+        }
+
+    </style>
+</head>
+<body>
+<div style="text-align: left; margin-left: 10px">
+    <button style="background-color: #4CAF50;padding: 15px 32px;font-size: 16px;margin: 4px 2px;" class="button" type="button" onClick="location.href = '/';">Back</button>
+</div> <br><br>
+
+    <div>
+        <form action="#" method="post" name="form_name" id="form_id" class="form_class">
+            <fieldset>
+
+                <legend>Please Login</legend>
+
+                <table class="center">
+                    <tr>
+                        <td><label for="email">Email</label></td>
+                        <td><label><input type="email" name="email" id="email" required/></label></td>
+                    </tr>
+                    <tr>
+                        <td><label for="password">Password</label></td>
+                        <td><label><input type="password" name="password" id="password" required/></label></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><button type="button" class="button" onclick="myFunction()">Log in</button></td>
+                    </tr>
+                </table>
+
+            </fieldset>
+        </form>
+    </div>
+</body>
+
+
+<script>
+    // function parseJwt (token) {
+    //     const base64Url = token.split('.')[1];
+    //     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    //     const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+    //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    //     }).join(''));
+    //
+    //     return JSON.parse(jsonPayload);
+    // }
+
+    function myFunction() {
+        const username = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        if (password==='')
+            alert("Fill box of password")
+        else if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(username))
+            alert("You have entered an invalid email address!")
+        else {
+            fetch("/api/auth/login?email=" + username + "&password=" + password)
+                .then(response => {
+                    if (!response.ok) {
+                        console.log(response)
+                        if (response.status === 403)
+                            alert("Email or password is wrong or The account block can be made!")
+                        else if (response.status === 401)
+                            alert("Please register first!")
+                        else alert("Something went wrong!")
+                        window.location.replace("/loginPage")
+                        exit()
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const html = data.tokenType + data.accessToken;
+                    localStorage.setItem('Key', html);
+                    // console.log(parseJwt(html).roles);
+                    // if(parseJwt(html).roles.length>0)
+                    //     window.location.replace("/adminPage")
+                    // else
+                        window.location.replace("/")
+                })
+                .catch(
+                    error => {
+                        console.log(error);
+                    }
+                );
+        }
+    }
+</script>
+</html>

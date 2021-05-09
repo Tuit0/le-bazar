@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Admin</title>
+    <style>
+        .button
+        {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4%;
+        }
+        .btn
+        {
+
+            background-color: green;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 10px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4%;
+        }
+        .present
+        {
+            width: 40%;
+            text-align: center;
+            margin-left: 30%;
+        }
+    </style>
+</head>
+<body>
+<div style="text-align: left; margin-left: 10px">
+    <button class="button" type="button" onClick="location.href = '/';">Home</button>
+</div> <br><br>
+
+
+    <div>
+        <form name="f" th:action="@{/checkUsername}" method="post">
+            <fieldset class="present">
+                <legend>Please Enter Email</legend>
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email"/>
+                <button class="btn" type="submit">Add as Admin</button>
+            </fieldset>
+        </form>
+    </div>
+</body>
+</html>

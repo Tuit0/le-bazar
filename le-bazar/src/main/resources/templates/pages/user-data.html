@@ -1,0 +1,36 @@
+<html xmlns:th="https://thymeleaf.org">
+<table>
+    <tr>
+        <td><h4>Username: </h4></td>
+        <td><h4 th:text="${user.getUsername}"></h4></td>
+    </tr>
+    <tr>
+        <td><h4>Password: </h4></td>
+        <td><h4 th:text="${user.getPassword}"></h4></td>
+    </tr>
+</table>
+
+<script type='text/javascript'>
+    // define vars
+    var url = 'http://localhost/api/auth/login';
+
+    // ajax call
+    $.ajax({
+        url: url,
+        dataType : 'jsonp',
+        beforeSend : function(xhr) {
+            // set header if JWT is set
+            if ($.window.sessionStorage.token) {
+                xhr.setRequestHeader("Authorization", "Bearer " +  $.window.sessionStorage.token);
+            }
+
+        },
+        error : function() {
+            // error handler
+        },
+        success: function(data) {
+            // success handler
+        }
+    });
+</script>
+</html>

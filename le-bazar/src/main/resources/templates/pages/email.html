@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Page</title>
+    <style>
+        .tb
+        {
+            align-items: center;
+            text-align: left;
+            margin-left: 30%;
+            width: 40%;
+        }
+        #app
+        {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .button
+        {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5%;
+
+        }
+    </style>
+</head>
+<body>
+<div style="text-align: left; margin-left: 10px">
+    <button class="button" type="button" onClick="location.href = '/';">Back</button>
+</div> <br><br>
+<div class="tb">
+<fieldset>
+    <legend>Registration page</legend>
+    <table id="app">
+        <tr>
+            <td><label>Email</label></td>
+            <td><label>
+                <input type="email" name="email" id="email"/>
+            </label></td>
+        </tr>
+        <tr>
+            <td><label>Password</label></td>
+            <td><label>
+                <input type="password" name="password1" id="password1" required/>
+            </label></td>
+        </tr>
+        <tr>
+            <td><label id="confirm">Repeat Password</label></td>
+            <td id="pass"><label>
+                <input type="password" name="password2" id="password2" required/>
+            </label></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button class="button" style="background-color: darkgoldenrod; font-size: 10px; padding: 10px 15px" onclick="simple()" id="but">
+                Send Code
+            </button></td>
+        </tr>
+    </table>
+</fieldset>
+</div>
+<script>
+    function simple() {
+        const email = document.getElementById("email").value;
+        const pass1 = document.getElementById("password1").value;
+        const pass2 = document.getElementById("password2").value;
+        if (pass1==='' || pass2===''){
+            alert("Password field is empty!")
+        } else if (pass1 !== pass2) {
+            alert("Passwords are not equals!")
+        } else if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
+            alert("You have entered an invalid email address!")
+        } else {
+            fetch("/api/auth/sendCode?email="+email, {method: "POST"}).then(
+                response => {
+                    if (!response.ok) {
+                        throw Error("Error")
+                    }
+                    return response.json();
+                }
+            )
+                .then(
+                    data => {
+                        if (data.message === 'Exist') {
+                            alert(data.data)
+                            window.location.replace("/registerPage")
+                        } else if (data.message === 'Send') {
+                            const code = prompt("A code has been sent to your email. Confirm the code:");
+                            if (code == null) {
+                                alert("False")
+                            } else {
+                                if (code === data.data) {
+                                    fetch("/saveUser?email="+email+"&password="+pass1,
+                                        {
+                                            method: "POST"
+                                        }).then(response => {
+                                        if (!response.ok) {
+                                            throw Error("Error")
+                                        }
+                                        return response.json();
+                                    }).then(data=>{
+                                        if (data.message==='Saved') {
+                                            alert("Successfully Registered.\nIf you press 'OK' you jump to Login page.")
+                                            window.location.replace("/loginPage")
+                                        } else {
+                                            alert("Something went wrong! Try again...")
+                                            window.location.replace("/registerPage")
+                                        }
+                                    })
+                                } else
+                                alert("You are wrong!")
+                            }
+                            } else {
+                            alert('Something went wrong!\nPlease try again..')
+                        }
+                    }
+                )
+                .catch(
+                    error => {
+                        console.log(error);
+                    }
+                );
+
+        }
+    }
+</script>
+</body>
+</html>

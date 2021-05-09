@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .product {
+            background-color: white;
+            float: left;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            margin-left: 1rem;
+            border: 1px solid darkgray;
+            width: 15%;
+            height: 270px;
+        }
+
+        .inform {
+            margin-left: 2px;
+            font-size: 14px;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 5px 2px;
+            cursor: pointer;
+            border-radius: 4%;
+        }
+
+
+        .SearchBar input {
+            height: 30px;
+            width: 70%;
+        }
+
+        .Row {
+            display: table;
+            width: 100%; /*Optional*/
+            table-layout: fixed; /*Optional*/
+            border-spacing: 10px; /*Optional*/
+        }
+        .Column {
+            display: table-cell;
+            padding: 15px 32px;
+            text-decoration: none;
+            margin: 4px 2px;
+
+        }
+
+        /*Last Style*/
+        * {
+            box-sizing: border-box;
+        }
+
+        form.example input[type=text] {
+            padding: 10px;
+            font-size: 17px;
+            border: 1px solid grey;
+            float: bottom;
+            width: 90%;
+            background: #f1f1f1;
+        }
+
+        form.example button {
+            float: right;
+            width: 10%;
+            padding: 10px;
+            background: #2196F3;
+            color: white;
+            font-size: 17px;
+            border: 1px solid grey;
+            border-left: none;
+            cursor: pointer;
+        }
+
+        form.example button:hover {
+            background: #0b7dda;
+        }
+
+        form.example::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+    </style>
+</head>
+<body>
+
+<div style="text-align: center">
+    <div style="text-align: center; margin-left: 87%;">
+        <div style="display: inline-block;">
+            <button type="submit" th:onclick="|window.location.href='@{/profile(uuid=${uuid})}'|">Profile</button>
+        </div>
+        <div style="display: inline-block;">
+            <button type="submit" onclick="deleteKey()">Log out</button>
+        </div>
+    </div>
+</div>
+<div class="Row">
+    <div class="Column" style="text-align: left; width: 30%">
+        <a href="/">
+            <img src="https://lebazar.uz/static/9e311fbc623978f698901cea8dcb173f.png" alt="Le-bazar" width="40%">
+        </a>
+    </div>
+
+
+    <form class="example" action="/search" style="width:80%;">
+        <label>
+            <input type="text" placeholder="Search..." name="search">
+        </label>
+        <button type="submit" ><i class="fa fa-search"></i></button>
+    </form>
+
+    <div class="Column" style="text-align: right; width: 15%">
+        <button class="button" type="button" onclick="location.href = '/cart';">Cart</button>
+    </div>
+</div>
+<div id="app"></div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    const test = /*[[${search}]]*/ 'search';
+
+    /*]]>*/
+    function deleteKey() {
+        localStorage.removeItem("Key");
+        window.location.replace("/");
+    }
+    fetch("/api/products/search?search="+test)
+        .then(response => {
+            if (!response.ok) {
+                alert("Error")
+            }
+            return response.json();
+        })
+        .then(data => {
+            const html = data.data
+                .map(
+                    product => {
+                        return `
+                        <a href="oneProduct?id=${product.id}">
+                            <div class="product">
+                                <p class="column" style="text-align: center"><img src="data:image/png;base64, ${product.avatar}" alt="${product.name}" style="width: 80%"></p>
+                                <div class="inform">
+                                    <table>
+                                        <tr>
+                                            <td>Maker:</td>
+                                            <td>${product.maker}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Name:</td>
+                                            <td>${product.name}</td>
+                                        </tr>
+                                        <tr>
+                                        <td></td>
+                                        <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Price:</td>
+                                            <td>${product.price}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </a>
+                        `
+                    }
+                ).join("");
+            document.querySelector("#app").insertAdjacentHTML("afterbegin", html);
+        })
+        .catch(
+            error => {
+                alert(error)
+            }
+        );
+</script>
+</body>
+</html>

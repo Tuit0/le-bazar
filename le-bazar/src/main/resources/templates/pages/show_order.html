@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show All Orders</title>
+    <style>
+        .cart
+        {
+            display: flex;
+            background-color: aliceblue;
+            float: left;
+            margin-bottom: 1rem;
+            margin-top: 1rem;
+            margin-left: 4rem;
+            border: 1px solid black;
+            width: 90%;
+            height: 100px;
+        }
+        .column
+        {
+            height: 70px;
+            margin-left: 1rem;
+            margin-top: 1rem;
+        }
+        .inform
+        {
+            padding-left: 150px;
+        }
+        .user
+        {
+            padding-left: 250px;
+        }
+        .button
+        {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4%;
+        }
+        .btn
+        {
+            background-color: green;
+            border: none;
+            color: white;
+            padding: 7px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 10px;
+            cursor: pointer;
+            border-radius: 4%;        }
+    </style>
+</head>
+<body>
+<div style="text-align: left; margin-left: 10px">
+    <button class="button" type="button" onClick="location.href = '/';">Home</button>
+</div> <br><br>
+<div id="order"></div>
+<script>
+    function fetchData() {
+        fetch("/api/cart/orders")
+            .then(response => {
+                if (!response.ok) {
+                    throw Error("Error")
+                }
+                return response.json();
+            })
+            .then(data => {
+                const html = data.data
+                    .map(
+                        cart => {
+                            const date = new Date(cart.createdAt)
+                            return `
+                            <div class="cart">
+                                <div><img class="column" src="data:image/png;base64, ${cart.product.avatar}" alt="${cart.product.name}"></div>
+                                <div class="inform">
+                                    <p>Maker: ${cart.product.maker}<br>
+                                    Name: ${cart.product.name}</p>
+                                    <p style="color: blue">Quantity: ${cart.quantity}</p>
+                                </div>
+                                <div class="user">
+                                    <p>User email: ${cart.user.email}<br>
+                                    Date of order: ${date.toDateString()}</p>
+                                    <button type="button" class="btn" onClick="location.href = '/deleteFromCart?id=${cart.id}&path=show_order';">Delivered</button>
+                                </div>
+                            </div>
+                            `
+                        }
+                    ).join("");
+                console.log(html);
+                document.querySelector("#order").insertAdjacentHTML("afterbegin",html);
+            })
+            .catch(
+                error => {
+                    console.log(error);
+                }
+            );
+    }
+
+    fetchData();
+</script>
+</body>
+</html>

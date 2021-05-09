@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Result</title>
+    <style>
+        .button{
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div style="text-align: left; margin-left: 10px">
+    <button class="button" type="button" onClick="location.href = '/';">Home</button>
+</div>
+<div style="text-align: center">
+    <h4>
+        <span th:text="${result}"></span>
+    </h4>
+</div>
+</body>
+</html>

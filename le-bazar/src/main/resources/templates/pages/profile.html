@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+    <style>
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5%;
+
+        }
+
+        .tb {
+            align-items: center;
+            text-align: left;
+            margin-left: 35%;
+            width: 30%;
+        }
+
+        #app {
+            margin-left: 15px;
+            margin-right: auto;
+        }
+
+        .btn {
+            width: 50%;
+            margin-left: 25%;
+            background-color: orangered;
+            border: none;
+            padding: 5px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+    fetch(
+        "/userProfile",
+        {
+            method: 'GET',
+            headers: {
+                'Authorization': localStorage.getItem("Key")
+            }
+        }
+    )
+        .then(response => {
+            if (!response.ok) {
+                alert("Information is not found!")
+                window.location.replace('/')
+                exit()
+            }
+            return response.json();
+        })
+        .then(res => {
+            const html = HTML(res);
+            document.querySelector("#app").insertAdjacentHTML("afterbegin", html);
+        })
+        .catch(
+            error => {
+                alert(error)
+            }
+        );
+
+    function HTML(res) {
+        let birth = null;
+        if (res.birthDate != null)
+            birth = res.birthDate.toString().substr(0,10)
+
+        let firstname = res.firstName;
+        if (firstname !== null && firstname !== "null")
+            firstname = "value=\""+firstname+"\""
+        else firstname = ""
+
+        let lastname = res.lastName;
+        if (lastname !== null && lastname !== "null")
+            lastname = "value=\""+lastname+"\""
+        else lastname = ""
+
+        let phone = res.phone;
+        if (phone !== null && phone !== "null")
+            phone = "value=\""+phone+"\""
+        else phone = ""
+
+
+        let male;
+        if (res.gender === 'male')
+            male = 'checked';
+        else
+            male = ''
+
+        let female
+        if (res.gender === 'female')
+            female = 'checked';
+        else
+            female = ''
+        return `
+            <div style="text-align: left; margin-left: 10px">
+    <button class="button" type="button" onClick="location.href = '/';">Back</button>
+</div> <br><br>
+<div class="tb">
+    <fieldset>
+        <legend>My Profile</legend>
+        <form action="/saveProfile?email=${res.email}" method="post">
+            <table id="app">
+                <tr>
+                    <td><input type="text" name="firstname" placeholder="Firstname" ${firstname}></td>
+                    <td><input type="text" name="lastname" placeholder="Lastname" ${lastname}></td>
+                </tr>
+                <tr>
+                    <td><label for="birth">Birth date</label><br><input type="date" name="birth" id="birth" value="${birth}"></td>
+                    <td>
+                        Gender:
+                        <br>
+                        <input type="radio" id="male" name="gender" value="male" ${male}>
+                        <label for="male">Male</label><br>
+                        <input type="radio" id="female" name="gender" value="female" ${female}>
+                        <label for="female">Female</label><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="phone">Phone Number</label><br><input type="text" name="phone" placeholder="Phone number" id="phone" ${phone}></td>
+                    <td><label for="email">Email</label><br><input type="email" name="email" value="${res.email}" id="email" disabled></td>
+                </tr>
+                <tr>
+                    <td><input type="button" class="btn" value="Cancel" onclick="location.href = '/';"></td>
+                    <td><input type="submit" class="btn" style="background-color: green;" value="Save"></td>
+                </tr>
+            </table>
+        </form>
+    </fieldset>
+</div>
+        `
+    }
+</script>
+</body>
+</html>
